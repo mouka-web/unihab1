@@ -1,16 +1,30 @@
 version: '3.8'
+
 services:
   db:
     image: mysql:8.0
-    network_mode: host    # partage le réseau de l'hôte
+    container_name: mysql_server
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: event
+    ports:
+      - "3306:3306"  # expose mysql to localhost
+    networks:
+      - mynetwork
 
   web:
     build: .
-    network_mode: host    # localhost partagé avec la machine hôte
-    volumes:
-      - .:/var/www/html  # monte ton dossier local dans la racine Apache
+    container_name: php_server
+    ports:
+      - "8080:80"   # expose apache
     depends_on:
       - db
+    networks:
+      - mynetwork
+    extra_hosts:
+      - "localhost:host-gateway"   # <<< important sur Windows!
+
+networks:
+  mynetwork:
+    driver: bridge
