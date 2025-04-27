@@ -2,15 +2,15 @@ version: '3.8'
 services:
   db:
     image: mysql:8.0
-    network_mode: host       # très important
+    network_mode: host    # partage le réseau de l'hôte
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: event
 
   web:
     build: .
-    network_mode: host       # idem, partage le réseau de la machine
+    network_mode: host    # localhost partagé avec la machine hôte
     volumes:
-      - .:/var/www/html
+      - .:/var/www/html  # monte ton dossier local dans la racine Apache
     depends_on:
       - db
