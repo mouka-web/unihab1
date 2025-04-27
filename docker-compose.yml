@@ -1,32 +1,16 @@
-version: '3.7'
-
+version: '3.8'
 services:
-  web:
-    image: php:8.2-apache
-    container_name: event_web
-    ports:
-      - "80:80"
-    volumes:
-      - .:/var/www/html
-    networks:
-      - event_network
-    environment:
-      MYSQL_HOST: mysql
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-      MYSQL_DATABASE: event
-
-  mysql:
+  db:
     image: mysql:8.0
-    container_name: event_mysql
+    network_mode: host       # très important
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: event
-    networks:
-      - event_network
-    ports:
-      - "3306:3306"
 
-networks:
-  event_network:
-    driver: bridge
+  web:
+    build: .
+    network_mode: host       # idem, partage le réseau de la machine
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
