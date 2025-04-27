@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+  web:
+    image: php:8.2-apache
+    container_name: event_web
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+    networks:
+      - event_network
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: event
+
+  mysql:
+    image: mysql:8.0
+    container_name: event_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: event
+    networks:
+      - event_network
+    ports:
+      - "3306:3306"
+
+networks:
+  event_network:
+    driver: bridge
