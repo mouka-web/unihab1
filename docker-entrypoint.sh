@@ -2,8 +2,11 @@
 # Démarrer le service MySQL
 service mysql start
 
-# Créer la base de données 'event' si elle n'existe pas déjà
+# Configurer l'utilisateur root pour qu'il puisse se connecter avec un mot de passe vide
+mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';"
+
+# Créer la base de données 'event' si elle n'existe pas
 mysql -e "CREATE DATABASE IF NOT EXISTS event;"
 
-# Exécuter la commande par défaut (lancer Apache en mode premier plan)
+# Lancer Apache en avant-plan
 exec "$@"
