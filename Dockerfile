@@ -2,11 +2,12 @@
 FROM php:8.2-apache
 
 # Installer les dépendances nécessaires et l'extension mysqli
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    default-mysql-server \
-    libmysqlclient-dev \
- && docker-php-ext-install mysqli \
- && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        mariadb-server \
+        libmysqlclient-dev \
+    && docker-php-ext-install mysqli \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copier le script d'initialisation dans le conteneur et le rendre exécutable
 COPY docker-entrypoint.sh /usr/local/bin/
