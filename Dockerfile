@@ -1,20 +1,26 @@
+# Utiliser l'image officielle PHP avec Apache
 FROM php:8.2-apache
 
-# Installer mysqli et un serveur MySQL via le méta-paquet default-mysql-server
-RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-      libmysqlclient-dev \
-      default-mysql-server \
+# Installer les dépendances nécessaires et l'extension mysqli
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    default-mysql-server \
+    libmysqlclient-dev \
  && docker-php-ext-install mysqli \
  && rm -rf /var/lib/apt/lists/*
 
-# Copier l’application
+# Copier le script d'initialisation dans le conteneur et le rendre exécutable
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Copier tout le code de l'application dans le répertoire web d'Apache
 COPY . /var/www/html/
 
-# Permissions
+# Ajuster les permissions
 RUN chown -R www-data:www-data /var/www/html
 
+# Exposer le port HTTP
 EXPOSE 80
 
-# Démarrer MySQL puis Apache
-CMD service mysql start && apache2-foreground
+# Utiliser le script d'entrypoint personnalisé
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["apache2-foreground"]
