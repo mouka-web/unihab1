@@ -1,12 +1,9 @@
 #!/bin/bash
-# Démarrer le service MariaDB
-service mysql start
+# Démarrer MySQL installé dans le conteneur (via distribution Debian slim)
+service mysql start 2>/dev/null || true
 
-# Configurer l'utilisateur root pour qu'il puisse se connecter avec un mot de passe vide
-mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';"
+# Créer la base event si nécessaire
+mysql -u root -e "CREATE DATABASE IF NOT EXISTS event;" 2>/dev/null || true
 
-# Créer la base de données 'event' si elle n'existe pas
-mysql -e "CREATE DATABASE IF NOT EXISTS event;"
-
-# Lancer Apache en avant-plan
+# Lancer Apache
 exec "$@"
