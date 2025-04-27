@@ -1,20 +1,20 @@
-# Utiliser l'image officielle PHP avec Apache
 FROM php:8.2-apache
 
-# Mettre à jour le système et installer les paquets nécessaires (MySQL et mysqli)
-RUN apt-get update && apt-get install -y \
-    libmysqlclient-dev \
-    mysql-server \
-    && docker-php-ext-install mysqli
+# Installer mysqli et un serveur MySQL via le méta-paquet default-mysql-server
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      libmysqlclient-dev \
+      default-mysql-server \
+ && docker-php-ext-install mysqli \
+ && rm -rf /var/lib/apt/lists/*
 
-# Copier tous les fichiers de ton projet dans le dossier Apache (/var/www/html)
+# Copier l’application
 COPY . /var/www/html/
 
-# Donner les bons droits sur les fichiers
+# Permissions
 RUN chown -R www-data:www-data /var/www/html
 
-# Exposer le port 80 pour accéder à ton site
 EXPOSE 80
 
-# Démarrer MySQL et Apache au lancement du conteneur
+# Démarrer MySQL puis Apache
 CMD service mysql start && apache2-foreground
