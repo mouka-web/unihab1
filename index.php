@@ -2,7 +2,8 @@
 session_start();
 
 // Connexion à la base de données
-$conn =new mysqli('localhost', 'root', 'password', 'event');
+new mysqli('127.0.0.1', 'root', 'password', 'event');
+
 
 if ($conn->connect_error) {
     die("Échec de la connexion : " . $conn->connect_error);
